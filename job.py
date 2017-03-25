@@ -19,7 +19,7 @@ if is_py2:
     import Queue as queue
 else:
     import queue as queue
-from pysched import logger
+from pyschedlib import logger
 log = logger.get()
 
 
