@@ -82,7 +82,7 @@ class SlurmCommandDispatcherFactory(object):
       each machine.
     """
     if slurm_config_file is None:
-      slurm_config_file = "pysched/slurm_config.json"
+      slurm_config_file = "pyschedlib/slurm_config.json"
     self.slurm_config = json.load(open(slurm_config_file, "r"))
 
   def select_machine(self):
