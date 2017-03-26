@@ -135,7 +135,7 @@ class SlurmCommandDispatcherFactory(object):
       m = re.search("Gres=gpu:(\d)", job_info)
       if m is not None:
         num_gpu = int(m.group(1))
-        log.info("Machine \"{}\" GPU {}".format(machine, num_gpu))
+        log.info("Machine \"{}\" GPU {}".format(machine, num_gpu), verbose=2)
         if machine not in machine_count:
           machine_count[machine] = num_gpu
         else:
@@ -150,7 +150,7 @@ class SlurmCommandDispatcherFactory(object):
     count_arr = []
     down_machines = machine_state_dict[
         "down*"] if "down*" in machine_state_dict else []
-    log.info("Down machines {}".format(down_machines))
+    log.info("Down machines {}".format(down_machines), verbose=2)
     for jj, mm in enumerate(mm_list):
       if mm["name"] in down_machines:
         mm["priority"] = -10000
