@@ -424,7 +424,7 @@ class JobScheduler(PipelineStage):
         result_queue=self.output_queue,
         resource_queue=self.resource_queue,
         stdout_file=inp.stdout_file,
-        gpu_id=idx)
+        resource_id=idx)
     runner.start()
     self.runners.append(runner)
 
