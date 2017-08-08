@@ -99,6 +99,7 @@ class JobRunner(threading.Thread):
     self._results = None
     self._result_queue = result_queue
     self._resource_queue = resource_queue
+    self._resource_id = resource_id
     self._stdout_file = stdout_file
 
   @property
@@ -118,6 +119,10 @@ class JobRunner(threading.Thread):
     return self._resource_queue
 
   @property
+  def resource_id(self):
+    return self._resource_id
+
+  @property
   def results(self):
     return self._results
 
@@ -127,7 +132,8 @@ class JobRunner(threading.Thread):
 
   def launch(self):
     """Launch a new job."""
-    log.info("Job \"{}\" launched".format(self.request.job_id))
+    log.info("Job \"{}\" launched. Resource ID \"{}\"".format(
+        self.request.job_id, self.resource_id))
     return self.dispatcher.dispatch(
         self.request.cmd_args, stdout_file=self.stdout_file)
 
@@ -148,7 +154,7 @@ class JobRunner(threading.Thread):
     self._results = results
     self.finalize()
     if self.resource_queue is not None:
-      self.resource_queue.put(resource_id)
+      self.resource_queue.put(self.resource_id)
 
 
 class Pipeline(threading.Thread):
@@ -399,7 +405,7 @@ class JobScheduler(PipelineStage):
   def __init__(self, name, job_runner_factory, max_num_jobs=4):
     super(JobScheduler, self).__init__(name)
     self._resource_queue = queue.Queue(maxsize=max_num_jobs)
-    for ii in range( max_num_jobs):
+    for ii in range(max_num_jobs):
       self._resource_queue.put(ii)
     self._factory = job_runner_factory
     self._runners = []
