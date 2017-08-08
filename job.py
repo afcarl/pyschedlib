@@ -16,9 +16,9 @@ import time
 import traceback
 is_py2 = sys.version[0] == '2'
 if is_py2:
-    import Queue as queue
+  import Queue as queue
 else:
-    import queue as queue
+  import queue as queue
 from pyschedlib import logger
 log = logger.get()
 
@@ -424,7 +424,11 @@ class JobScheduler(PipelineStage):
         result_queue=self.output_queue,
         resource_queue=self.resource_queue,
         stdout_file=inp.stdout_file,
+<<<<<<< HEAD
         gpu_id=idx)
+=======
+        gpu_id=(self.resource_queue.qsize() * 2 - 1) % 4 - 1)  # Hack here!
+>>>>>>> e5d8d59f77d5e1aba46efbd976c9caef5103708f
     runner.start()
     self.runners.append(runner)
 
