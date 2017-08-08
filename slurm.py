@@ -178,7 +178,12 @@ class SlurmJobRunnerFactory(object):
   def __init__(self, slurm_config_file=None):
     self._slurm_config_file = slurm_config_file
 
-  def create(self, request, result_queue, resource_queue, stdout_file=None):
+  def create(self,
+             request,
+             result_queue,
+             resource_queue,
+             stdout_file=None,
+             resource_id=0):
     return JobRunner(
         request,
         SlurmCommandDispatcherFactory(
@@ -186,7 +191,8 @@ class SlurmJobRunnerFactory(object):
                 num_gpu=request.num_gpu, num_cpu=request.num_cpu),
         result_queue=result_queue,
         resource_queue=resource_queue,
-        stdout_file=stdout_file)
+        stdout_file=stdout_file,
+        resource_id=resource_id)
 
 
 if __name__ == "__main__":

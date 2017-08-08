@@ -87,7 +87,8 @@ class JobRunner(threading.Thread):
                dispatcher,
                stdout_file=None,
                result_queue=None,
-               resource_queue=None):
+               resource_queue=None,
+               resource_id=0):
     """
     Args:
     """
@@ -99,7 +100,6 @@ class JobRunner(threading.Thread):
     self._result_queue = result_queue
     self._resource_queue = resource_queue
     self._stdout_file = stdout_file
-    pass
 
   @property
   def request(self):
@@ -148,9 +148,7 @@ class JobRunner(threading.Thread):
     self._results = results
     self.finalize()
     if self.resource_queue is not None:
-      # print("get", self.resource_queue.qsize())
-      self.resource_queue.get()
-    pass
+      self.resource_queue.put(resource_id)
 
 
 class Pipeline(threading.Thread):
@@ -401,9 +399,10 @@ class JobScheduler(PipelineStage):
   def __init__(self, name, job_runner_factory, max_num_jobs=4):
     super(JobScheduler, self).__init__(name)
     self._resource_queue = queue.Queue(maxsize=max_num_jobs)
+    for ii in range( max_num_jobs):
+      self._resource_queue.put(ii)
     self._factory = job_runner_factory
     self._runners = []
-    pass
 
   @property
   def factory(self):
@@ -418,13 +417,14 @@ class JobScheduler(PipelineStage):
     return self._runners
 
   def do(self, inp):
-    self.resource_queue.put(1)
+    idx = self.resource_queue.get()
     # print("put", self.resource_queue.qsize())
     runner = self.factory.create(
         inp,
         result_queue=self.output_queue,
         resource_queue=self.resource_queue,
-        stdout_file=inp.stdout_file)
+        stdout_file=inp.stdout_file,
+        gpu_id=idx)
     runner.start()
     self.runners.append(runner)
 

@@ -47,13 +47,19 @@ class LocalCommandDispatcher(CommandDispatcher):
 class LocalJobRunnerFactory(object):
   """Creates a new LocalJobRunner."""
 
-  def create(self, request, result_queue, resource_queue, stdout_file=None):
+  def create(self,
+             request,
+             result_queue,
+             resource_queue,
+             stdout_file=None,
+             resource_id=0):
     return JobRunner(
         request,
-        LocalCommandDispatcher(),
+        LocalCommandDispatcher(gpu_id=resource_id),
         result_queue=result_queue,
         resource_queue=resource_queue,
-        stdout_file=stdout_file)
+        stdout_file=stdout_file,
+        resource_id=resource_id)
 
 
 class LocalCommandDispatcherFactory(object):
