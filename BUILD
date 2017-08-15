@@ -2,6 +2,7 @@ py_library(
     name = "job",
     srcs = ["job.py"],
     deps = [":logger"],
+    visibility = ["//visibility:public"],
 )
 
 py_library(
